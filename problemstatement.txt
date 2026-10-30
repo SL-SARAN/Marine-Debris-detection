@@ -1,0 +1,84 @@
+Smart India Hackathon
+statement - AI-Powered Automated Underwater Marine Debris and Anomaly Detection System using Side-Scan Sonar Imagery
+description:
+Background The accumulation of anthropogenic (man-made) debris in marine ecosystems poses a critical threat to global biodiversity. Among the most destructive types of pollution are â€˜ghost netsâ€™â€”abandoned, lost, or discarded fishing gear. These nets continuously trap and kill marine life,destroy coral reefs, and damage commercial vessel propellers.
+
+Because the ocean is vast and dark, marine conservationists and underwater technologists rely on Side Scan Sonar (SSS) instruments. These sensors are towed behind ships or mounted on Autonomous Underwater Vehicles (AUVs) to create detailed acoustic maps of the seafloor.However, manual inspection of thousands of kilometers of sonar logs is incredibly slow, tedious, and prone to human error. Debris can easily blend into natural geological features like rock formations, sand ripples, and marine ridges. Automating this process via computer vision is essential for efficient ocean cleanup operations.
+
+• Description Participants must develop an end-to-end automated computer vision pipeline capable of ingesting side-scan sonar imagery, identifying man-made debris against a complex natural background, and generating actionable localized data.The software system must be robust enough to handle the core challenges inherent to acoustic imagery: high speckle noise, varying pixel resolutions, acoustic shadows, and data dropouts caused by underwater vehicle motion (heave, pitch, and roll). The primary objective is to build an algorithm that reliably separates natural seafloor topology from artificial anomalies. The final solution should be optimized to run efficiently, potentially allowing deployment on edge devices or onboard a marine drone without requiring heavy cloud computing dependencies.
+• Expected Solution Teams are expected to deliver a functional, modular software prototype containing the following core components:
+• Object Detection / Semantic Segmentation Model: An AI/ML architecture (such as YOLO,Faster R-CNN, or U-Net) trained to detect and draw bounding boxes or pixel-level masks around man-made objects (including shipwrecks, pipes, cylinders, and entangled debris nets).
+• Confidence Scoring & Noise Filtering Module: An algorithmic pipeline or pre-processing filter that minimizes false positives caused by natural acoustic shadows or rock clusters,outputting a clear confidence score (0% to 100%) for every detected anomaly.
+• Anomalous Reporting & Geotagging Engine: A data-parsing script or lightweight dashboard interface that reads sonar metadata (such as coordinate files or ping headers) to output a structured report (JSON or CSV format). This report must detail the exact location (latitude/longitude), bounding dimensions, and classification of each detected hazard.
+• User Interface (UI) Dashboard: A visual interface where a user can upload a raw sonar image log, view the AI models' detections overlaid on the map in real-time, and download the generated anomaly reports.
+
+
+Basic idea of building:
+
+Scope of Innovation (Existing Solutions) 💡
+Competitor / Existing Solution Landscape
+Solution	What it does	Limitation
+🛰️ Debris Tracker App (NOAA/UGA)	Citizen-science GPS logging of surface/shoreline debris sightings	Manual, human-reported, zero underwater/sonar capability supported by NOAA's Marine Debris Program alongside Ocean Conservancy's CleanSwell app 
+NOAA Marine Debris Program
+
+🌊 Ocean Conservancy CleanSwell	Beach cleanup logging	Same — surface-level, manual, not AI/sonar
+🛩️ DebrisScan (ORBTL AI / NOAA)	AI tool to automatically label, classify, and count marine debris in aerial drone imagery 
+GitHub
+	Works on aerial optical imagery of shorelines, not underwater acoustic sonar — completely different sensor modality and noise profile
+📚 Academic YOLO-for-sonar papers (BES-YOLO, MAL-YOLO, DFSE-YOLO, TR-YOLOv5s)	Research-grade detection models for shipwrecks/mines in SSS	Achieve ~92.4% mAP@0.5 on curated benchmark datasets 
+nih
+ but are single-purpose research code — no end-to-end reporting/dashboard/geotagging pipeline, not built for edge deployment
+🛥️ NOAA DIVER	A data integration and visualization tool for hazardous waste, oil spills, and marine debris response data 
+Liferay
+	A data warehouse/GIS tool, not an AI detection pipeline
+
+Key gap you can exploit: Every strong existing solution is either (a) a citizen-reporting app with zero AI, or (b) an academic detection model with zero product wrapper (no dashboard, no geotagging engine, no report generation). Nobody has stitched detection → confidence scoring → geotagged report → UI into one deployable pipeline. That integration is your innovation angle — you don't need a novel architecture, you need the full-stack glue that papers never bother building.
+
+Where to differentiate technically:
+
+🧠 Confidence calibration, not just accuracy — most sonar papers report mAP but ignore calibrated confidence (Platt scaling / temperature scaling) which the PS explicitly demands (0–100% score).
+🔊 Physics-aware preprocessing — wavelet/speckle denoising as an explicit, visualized pipeline stage (several 2024–25 papers, e.g. BES-YOLO, use 2D wavelet decomposition specifically for this).
+⚡ Model efficiency for edge — a lightweight backbone (MobileNet/EfficientNet-lite or YOLOv8n) with quantization is a differentiator since most academic papers optimize for accuracy, not deployability.
+🗺️ Interactive geospatial dashboard — turning raw detections into a Leaflet/Mapbox overlay is the most "wow factor per hour of work" feature you can build.
+
+
+Clarity of Problem Statement 🧩
+
+What's explicitly asked (4 deliverables):
+
+Detection/segmentation model (bounding boxes or masks)
+Confidence scoring + noise-filtering module
+Geotagging/reporting engine (JSON/CSV output)
+UI dashboard (upload → view → download)
+
+Where teams misinterpret this:
+
+❌ Treating it as a pure "train a YOLO model" ML assignment and ignoring the reporting/geotagging/UI components (which are worth as much as the model).
+❌ Assuming they must acquire real raw sonar log files with true GPS ping headers — public datasets rarely include this; synthetic/simulated geotagging is acceptable and expected, just be transparent about it.
+❌ Over-promising "edge deployment" without ever running an actual latency benchmark.
+❌ Confusing debris detection with generic underwater object detection (fish, coral) — PS is specifically about anthropogenic anomalies vs. natural seafloor topology.
+
+How to frame the solution for evaluators: Present it explicitly as a 4-module pipeline matching the PS's own bullet structure 1:1 (Detection → Confidence/Filtering → Geotag/Report → Dashboard). This mirroring makes grading trivially easy for the judge — "did they build all 4 things" — and signals you read the brief carefully.
+
+Does a real model run on real (or realistic) sonar data — not just a toy demo on 5 cherry-picked images?
+Is the false-positive problem (rocks/shadows) actually addressed, or just claimed?
+Can they explain how they calibrated confidence scores to be meaningful (not just the YOLO output)?
+Does the map/UI actually use real geotag data (or plausible synthetic data) — or is the map just decorative?
+
+
+AI-Buildability Split (20/80) 🤖
+
+The 20% AI can build fast:
+
+Fine-tuning YOLOv8/U-Net on the public labeled datasets (Ultralytics makes this genuinely a few hours of work).
+Boilerplate dashboard (Streamlit/React + Leaflet map) and JSON/CSV export code.
+Basic denoising filters (median, Gaussian, wavelet via OpenCV/scikit-image) — mostly copy-paste from documentation.
+
+The 80% requiring real judgment:
+
+Understanding why the model fails — is a false positive because of shadow geometry, ridge texture, or resolution mismatch? This needs someone to actually look at sonar physics, not just tune hyperparameters.
+Confidence calibration that's meaningful (not just softmax score relabeled as "confidence") — requires understanding calibration techniques and validating them.
+Handling class imbalance and domain shift between datasets (KLSG vs. MILCO/NOMBO have different sonar frequencies/resolutions) — a naive merge will silently hurt performance.
+Geotagging logic when real ping metadata isn't available — deciding how to honestly simulate/interpolate coordinates without misleading judges.
+The edge-deployment argument — actually reasoning about model size, quantization, and latency trade-offs, which AI-generated code won't do correctly without oversight.
+

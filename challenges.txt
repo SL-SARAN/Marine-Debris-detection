@@ -1,0 +1,5 @@
+Common Performance Challenges
+Acoustic Shadows: 
+Seafloor features and steep rock formations cast shadows that can mimic or obscure small target clutter.
+Low Signal-to-Clutter Ratio: Hard-to-detect targets embedded in sea grass or high-reverberation sediment reduce mean average precision (mAP) scores.
+Viewpoint Sensitivity: Changing AUV altitude and beam divergence degrade resolution at outer swath ranges.

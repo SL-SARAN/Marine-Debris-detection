@@ -1,0 +1,59 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Caches and logs
+.pytest_cache/
+*.log
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv*/
+env*/
+ENV/
+
+# Node / Frontend
+node_modules/
+.npm/
+pipeline/frontend/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Datasets & raw acoustic sensor data
+/data/
+/data
+/unprocessed_data/
+/unprocessed_data
+/Marine Dataset/
+/Marine Dataset
+
+# Training runs, experiments, and checkpoints
+/runs/
+runs/
+*.pt.backup
+
+# Temporary / unneeded model weights
+/yolov8n.pt
+pipeline/models/yolov8n.pt
+*.onnx
+
+# Runtime outputs & generated test files
+pipeline/test_outputs/
+pipeline/cloud_sync_data/
+
+# Presentation & video demo media
+*.pptx
+*.mp4
+*.avi
+*.mov
+
+# Operating System / IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
